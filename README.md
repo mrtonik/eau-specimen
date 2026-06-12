@@ -23,7 +23,7 @@ automation API.
 | `Buttons/` `Chrome/` `Containers/` `Dialogs/` `Extras/` `Lists/` `Menus/` `Range/` `TextInput/` `Windows/` | One specimen app each — a deterministic gallery of related widgets/states, built programmatically (no Gorm/NIB). |
 | `SpecimenKit/` | Shared support code the apps link against: grid layout, debug overlay, deterministic state dump, widget registry, metrics, logging, app delegate. |
 | `tests/` | One `test_*.py` per app (independent TAP streams), `goldens/` baselines, `run.sh` orchestrator. |
-| `diagnostics/` | Runtime-analysis drivers (valgrind / ASan / TSan, Eau-vs-base differential, spec-oracle) — see [diagnostics/README.md](diagnostics/README.md). |
+| `diagnostics/` | Runtime-analysis drivers (valgrind / ASan / TSan, Eau-vs-base differential, spec-oracle) — see [Diagnostics](#diagnostics). |
 
 ## Requirements
 
@@ -75,6 +75,50 @@ SPEC_THEME=~/src/gershwin-eau-theme/Eau.theme ./run.sh
 Each `test_*.py` launches its own specimen under a throwaway defaults sandbox,
 loads the selected theme, attaches over UIBridge, exercises the widgets, and
 diffs each window against `tests/goldens/<app>/`.
+
+## Diagnostics
+
+`diagnostics/` holds runtime-analysis drivers that exercise the specimens under
+memory/concurrency checkers and differential oracles — the scripts behind the Eau
+findings (crash/UAF/race attribution, dropped state cues, spec drift). They reuse
+`tests/spec_harness.py` and goldstep's `diagnostics` API. These are **drivers, not
+pass/fail TAP** — each launches a specimen, probes it, and prints a verdict or
+leaves a checker report behind.
+
+| Script | What it does | Build needed |
+|---|---|---|
+| `run_diag.py` | Run a specimen under **valgrind** (`memcheck` / `helgrind` / `drd`) via `launch_wrapper`, inside a private Xephyr; leaves the report. | normal |
+| `diff_base.py` | **Eau-vs-base differential**: render the checkbox states under Eau and the built-in base GSTheme (`theme=False`) and flag any state cue Eau collapses (disabled greying, mixed glyph). | normal |
+| `interact.py` | **State-transition** checks via real XTEST input: click toggles a checkbox `0↔1`; typing updates a field's live value; Tab moves the key view. | normal |
+| `run_asan_soak.py` | **ASan soak**: cycle launch→exercise→teardown ×K (the teardown pool-drain is the stack-overflow trigger); `SOAK_BASE=1` runs the base-theme control. | ASan build |
+| `run_tsan.py` | **TSan run** collecting data-race reports from the bridge's DO connection + teardown. | TSan build |
+| `spec_oracle.py` | Parse `AppearanceMetrics.h` and assert measured widget geometry (button heights, scroller width, …) against the documented metrics. | `EAU_THEME_DIR` |
+
+Build the specimens first (`tests/run.sh`), then run a driver directly. They honour
+the same env as above, plus `EAU_THEME_DIR` for `spec_oracle.py`; reports/PNGs are
+written next to the scripts and are git-ignored.
+
+```sh
+python3 diagnostics/run_diag.py memcheck Buttons   # valgrind, no rebuild
+python3 diagnostics/diff_base.py                   # Eau-vs-base checkbox differential
+python3 diagnostics/interact.py                    # XTEST state-transition checks
+EAU_THEME_DIR=~/src/gershwin-eau-theme python3 diagnostics/spec_oracle.py
+```
+
+**Sanitizer builds** (`run_asan_soak.py` / `run_tsan.py`): valgrind needs no special
+build, but the sanitizers must be compiled into **both the theme and the specimen**.
+Rebuild each with the matching flags, e.g. ASan:
+
+```sh
+gmake clean
+gmake ADDITIONAL_OBJCFLAGS="-fsanitize=address -fno-omit-frame-pointer -O1 -g" \
+      ADDITIONAL_LDFLAGS="-fsanitize=address"
+```
+
+(TSan: `-fsanitize=thread -O1 -g`.) Point `EAU_THEME_DIR`/`SPEC_THEME` at the
+instrumented theme, then run e.g. `ASAN_OPTIONS=log_path=$PWD/diagnostics/asan
+python3 diagnostics/run_asan_soak.py Buttons 12`. `memcheck` serialises threads, so
+use `helgrind`/`drd` (or a TSan build) for the data race.
 
 ## Goldens are host-sensitive
 
