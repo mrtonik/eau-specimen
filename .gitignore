@@ -15,6 +15,14 @@ __pycache__/
 # test run scratch (regenerate by running the suite)
 tests/artifacts/
 
+# diagnostics run output (valgrind/sanitizer reports, captures, backtraces)
+diagnostics/*.log
+diagnostics/*.png
+diagnostics/*.txt
+diagnostics/*.gz
+diagnostics/asan.*
+diagnostics/tsan.*
+
 # editors / OS
 *.swp
 .DS_Store

@@ -23,6 +23,7 @@ automation API.
 | `Buttons/` `Chrome/` `Containers/` `Dialogs/` `Extras/` `Lists/` `Menus/` `Range/` `TextInput/` `Windows/` | One specimen app each — a deterministic gallery of related widgets/states, built programmatically (no Gorm/NIB). |
 | `SpecimenKit/` | Shared support code the apps link against: grid layout, debug overlay, deterministic state dump, widget registry, metrics, logging, app delegate. |
 | `tests/` | One `test_*.py` per app (independent TAP streams), `goldens/` baselines, `run.sh` orchestrator. |
+| `diagnostics/` | Runtime-analysis drivers (valgrind / ASan / TSan, Eau-vs-base differential, spec-oracle) — see [diagnostics/README.md](diagnostics/README.md). |
 
 ## Requirements
 
