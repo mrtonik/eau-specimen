@@ -1,0 +1,20 @@
+# GNUstep build output
+obj/
+*.app/
+*.o
+*.d
+stamp.make
+
+# crash dumps
+*.core
+
+# Python
+__pycache__/
+*.py[cod]
+
+# test run scratch (regenerate by running the suite)
+tests/artifacts/
+
+# editors / OS
+*.swp
+.DS_Store
