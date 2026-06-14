@@ -73,16 +73,19 @@
 
 - (void)setupSpecimen
 {
-  NSRect cr = NSMakeRect(0, 0, 500, 120);
+  CGFloat bh = METRICS_RADIO_BUTTON_SIZE;
+  CGFloat totalH = METRICS_CONTENT_BOTTOM_MARGIN + bh + SPEC_TOP_MARGIN;
+  CGFloat totalW = SPEC_SIDE_MARGIN + 120 + SPEC_SIDE_MARGIN;
+  NSRect cr = NSMakeRect(0, 0, totalW, totalH);
   NSView *content = [[NSView alloc] initWithFrame:cr];
 
-  _markerBox = [[NSButton alloc] initWithFrame:NSMakeRect(200, 50, 120, 18)];
+  _markerBox = [[NSButton alloc] initWithFrame:NSMakeRect(SPEC_SIDE_MARGIN, METRICS_CONTENT_BOTTOM_MARGIN, 120, bh)];
   [_markerBox setButtonType:NSSwitchButton];
   [_markerBox setTitle:@"Marker"];
   [_markerBox setState:NSOffState];
   [_markerBox setEnabled:NO];   // display-only; toggled by the menu, not clicks
   [content addSubview:_markerBox];
-  [[SpecRegistry shared] add:_markerBox identifier:@"Marker" expected:@{@"state":@0} eau:@"NSMenu (dispatch)"];
+  [[SpecRegistry shared] add:_markerBox identifier:@"NSButton (marker)" expected:@{@"state":@0} eau:@"NSMenu (dispatch)"];
 
   NSWindow *win = [[NSWindow alloc] initWithContentRect:cr
                                               styleMask:(NSTitledWindowMask | NSClosableWindowMask

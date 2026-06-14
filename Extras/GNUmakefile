@@ -14,7 +14,7 @@ Extras_OBJC_FILES = \
 	$(KIT)/SpecGrid.m \
 	$(KIT)/SpecAppDelegate.m
 
-ADDITIONAL_OBJCFLAGS += -fobjc-arc -I$(KIT) -Wall -Wno-protocol
+ADDITIONAL_OBJCFLAGS += -fobjc-arc -I$(KIT) -I../.. -Wall -Wno-protocol
 Extras_OBJC_LIBS += -ldispatch
 
 include $(GNUSTEP_MAKEFILES)/application.make

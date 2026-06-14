@@ -49,51 +49,51 @@
 
   // Row 1: push-button states
   NSButton *normal = [self push:@"Normal"];
-  [g add:normal caption:@"Normal" expected:@{@"enabled":@YES} eau:@"Eau+Button.m"];
+  [g add:normal caption:@"NSButton" expected:@{@"enabled":@YES} eau:@"Eau+Button.m"];
 
   NSButton *disabled = [self push:@"Disabled"];
   [disabled setEnabled:NO];
-  [g add:disabled caption:@"Disabled" expected:@{@"enabled":@NO} eau:@"NSButtonCell+Eau.m"];
+  [g add:disabled caption:@"NSButton (disabled)" expected:@{@"enabled":@NO} eau:@"NSButtonCell+Eau.m"];
 
   NSButton *def = [self push:@"Default"];
-  [g add:def caption:@"Default" expected:@{@"isDefault":@YES} eau:@"NSButtonCell+Eau.m"];
+  [g add:def caption:@"NSButton (default)" expected:@{@"isDefault":@YES} eau:@"NSButtonCell+Eau.m"];
 
   NSButton *pressed = [self push:@"Pressed"];
   [[pressed cell] setHighlighted:YES];
-  [g add:pressed caption:@"Pressed" expected:@{@"highlighted":@YES} eau:@"Eau+Button.m"];
+  [g add:pressed caption:@"NSButton (pressed)" expected:@{@"highlighted":@YES} eau:@"Eau+Button.m"];
 
   // Row 2: variants
   NSButton *small = [self push:@"Small"];
   NSRect sf = small.frame; sf.size.height = SPEC_BUTTON_SMALL_HEIGHT; [small setFrame:sf];
-  [g add:small caption:@"Small" expected:@{} eau:@"Eau+Button.m"];
+  [g add:small caption:@"NSButton (small)" expected:@{} eau:@"Eau+Button.m"];
 
   NSButton *imgText = [self push:@"Item"];
   [imgText setImage:[NSApp applicationIconImage]];
   [imgText setImagePosition:NSImageLeft];
   [imgText sizeToFit];
   NSRect itf = imgText.frame; itf.size.height = SPEC_BUTTON_HEIGHT; [imgText setFrame:itf];
-  [g add:imgText caption:@"Image+Text" expected:@{} eau:@"NSButtonCell+Eau.m"];
+  [g add:imgText caption:@"NSButton (image+text)" expected:@{} eau:@"NSButtonCell+Eau.m"];
 
   NSButton *imgOnly = [[NSButton alloc] initWithFrame:NSMakeRect(0, 0, 28, 24)];
   [imgOnly setBezelStyle:NSRoundedBezelStyle];
   [imgOnly setImage:[NSApp applicationIconImage]];
   [imgOnly setImagePosition:NSImageOnly];
-  [g add:imgOnly caption:@"Image only" expected:@{} eau:@"NSButtonCell+Eau.m"];
+  [g add:imgOnly caption:@"NSButton (image only)" expected:@{} eau:@"NSButtonCell+Eau.m"];
 
   NSButton *square = [self push:@"Square"];
   [square setBezelStyle:NSRegularSquareBezelStyle];
-  [g add:square caption:@"Square bezel" expected:@{} eau:@"Eau+Button.m"];
+  [g add:square caption:@"NSButton (square)" expected:@{} eau:@"Eau+Button.m"];
 
   // Row 3: checkboxes
-  [g add:[self check:@"Off" state:NSOffState] caption:@"Check off"
+  [g add:[self check:@"Off" state:NSOffState] caption:@"NSButton (check off)"
        expected:@{@"state":@0} eau:@"NSButtonCell+Eau.m"];
-  [g add:[self check:@"On" state:NSOnState] caption:@"Check on"
+  [g add:[self check:@"On" state:NSOnState] caption:@"NSButton (check on)"
        expected:@{@"state":@1} eau:@"NSButtonCell+Eau.m"];
-  [g add:[self check:@"Mixed" state:NSMixedState] caption:@"Check mixed"
+  [g add:[self check:@"Mixed" state:NSMixedState] caption:@"NSButton (check mixed)"
        expected:@{@"state":@(-1)} eau:@"NSButtonCell+Eau.m"];
   NSButton *cd = [self check:@"Disabled" state:NSOnState];
   [cd setEnabled:NO];
-  [g add:cd caption:@"Check disabled" expected:@{@"enabled":@NO} eau:@"NSButtonCell+Eau.m"];
+  [g add:cd caption:@"NSButton (check disabled)" expected:@{@"enabled":@NO} eau:@"NSButtonCell+Eau.m"];
 
   // Row 4: radio group (NSMatrix)
   NSButtonCell *proto = [[NSButtonCell alloc] init];
@@ -107,20 +107,20 @@
   [[[radio cells] objectAtIndex:1] setTitle:@"Two"];
   [[[radio cells] objectAtIndex:2] setTitle:@"Three"];
   [radio selectCellAtRow:1 column:0];
-  [g add:radio caption:@"Radio group" expected:@{} eau:@"NSButtonCell+Eau.m"];
+  [g add:radio caption:@"NSMatrix (radio)" expected:@{} eau:@"NSButtonCell+Eau.m"];
 
   // Row 5: NSSwitch (NEW Eau theming — Eau+Switch.m)
-  [g add:[self sw:0 enabled:YES] caption:@"Switch off"
+  [g add:[self sw:0 enabled:YES] caption:@"NSSwitch (off)"
        expected:@{@"state":@0} eau:@"Eau+Switch.m"];
-  [g add:[self sw:1 enabled:YES] caption:@"Switch on"
+  [g add:[self sw:1 enabled:YES] caption:@"NSSwitch (on)"
        expected:@{@"state":@1} eau:@"Eau+Switch.m"];
   NSSwitch *sd = [self sw:1 enabled:NO];
-  [g add:sd caption:@"Switch disabled" expected:@{@"enabled":@NO} eau:@"Eau+Switch.m"];
+  [g add:sd caption:@"NSSwitch (disabled)" expected:@{@"enabled":@NO} eau:@"Eau+Switch.m"];
 
   // Hidden state: a button that should draw nothing (caption still shows).
   NSButton *hid = [self push:@"Invisible"];
   [hid setHidden:YES];
-  [g add:hid caption:@"Hidden" expected:@{@"hidden":@YES} eau:@"NSView (hidden)"];
+  [g add:hid caption:@"NSButton (hidden)" expected:@{@"hidden":@YES} eau:@"NSView (hidden)"];
 
   // A2: every NSBezelStyle (find crashes / odd rendering under Eau+Button.m)
   struct { NSBezelStyle s; const char *name; const char *title; } bz[] = {

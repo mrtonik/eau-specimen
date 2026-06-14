@@ -28,36 +28,49 @@
 
 - (void)setupSpecimen
 {
-  NSRect cr = NSMakeRect(0, 0, 520, 300);
+  // Vertical layout, bottom to top:
+  //   bottom margin | ToggleDrawer | button gap | ShowSheet | button gap | ShowPanel | control gap | Popups | top margin
+  CGFloat y = METRICS_CONTENT_BOTTOM_MARGIN;  // 20
+  CGFloat toggleY = y;  y += METRICS_BUTTON_HEIGHT + METRICS_BUTTON_VERT_INTERSPACE;
+  CGFloat sheetY  = y;  y += METRICS_BUTTON_HEIGHT + METRICS_BUTTON_VERT_INTERSPACE;
+  CGFloat panelY  = y;  y += METRICS_BUTTON_HEIGHT + 16;  // 16px control-to-popup gap
+  CGFloat popupY  = y;
+
+  CGFloat totalH = popupY + 24 + SPEC_TOP_MARGIN;
+  CGFloat colGap = 30.0;
+  CGFloat totalW = SPEC_SIDE_MARGIN + 160 + colGap + 160 + SPEC_SIDE_MARGIN;
+  NSRect cr = NSMakeRect(0, 0, totalW, totalH);
   NSView *content = [[NSView alloc] initWithFrame:cr];
+
+  CGFloat rightColX = SPEC_SIDE_MARGIN + 160 + colGap;
 
   // NSPopUpButton — popup style (NSPopUpButton+Eau / NSMenuItemCell+Eau)
   NSPopUpButton *popup = [[NSPopUpButton alloc]
-                            initWithFrame:NSMakeRect(40, 240, 160, 24) pullsDown:NO];
+                            initWithFrame:NSMakeRect(SPEC_SIDE_MARGIN, popupY, 160, 24) pullsDown:NO];
   [popup addItemsWithTitles:@[@"Alpha", @"Bravo", @"Charlie"]];
   [popup selectItemAtIndex:1];
   [content addSubview:popup];
-  [[SpecRegistry shared] add:popup identifier:@"Popup" expected:@{} eau:@"NSPopUpButton+Eau.m"];
+  [[SpecRegistry shared] add:popup identifier:@"NSPopUpButton" expected:@{} eau:@"NSPopUpButton+Eau.m"];
 
   // NSPopUpButton — pulldown style (first item is the persistent title)
   NSPopUpButton *pull = [[NSPopUpButton alloc]
-                           initWithFrame:NSMakeRect(240, 240, 160, 24) pullsDown:YES];
+                           initWithFrame:NSMakeRect(rightColX, popupY, 160, 24) pullsDown:YES];
   [pull addItemsWithTitles:@[@"Actions", @"Duplicate", @"Rename", @"Delete"]];
   [content addSubview:pull];
-  [[SpecRegistry shared] add:pull identifier:@"Pulldown" expected:@{} eau:@"NSPopUpButton+Eau.m"];
+  [[SpecRegistry shared] add:pull identifier:@"NSPopUpButton (pulldown)" expected:@{} eau:@"NSPopUpButton+Eau.m"];
 
-  [self button:@"Show Panel"   at:NSMakeRect(40, 180, 140, 28)
-        action:@selector(showPanel:)   id:@"ShowPanel"   eau:@"NSPanel/decoration" into:content];
-  [self button:@"Show Sheet"   at:NSMakeRect(40, 130, 140, 28)
-        action:@selector(showSheet:)   id:@"ShowSheet"   eau:@"sheet decoration" into:content];
-  [self button:@"Toggle Drawer" at:NSMakeRect(40, 80, 140, 28)
-        action:@selector(toggleDrawer:) id:@"ToggleDrawer" eau:@"NSDrawer (base)" into:content];
+  [self button:@"NSPanel"   at:NSMakeRect(SPEC_SIDE_MARGIN, panelY, 140, METRICS_BUTTON_HEIGHT)
+        action:@selector(showPanel:)   id:@"NSPanel"   eau:@"NSPanel/decoration" into:content];
+  [self button:@"NSPanel (sheet)"   at:NSMakeRect(SPEC_SIDE_MARGIN, sheetY, 140, METRICS_BUTTON_HEIGHT)
+        action:@selector(showSheet:)   id:@"Sheet"   eau:@"sheet decoration" into:content];
+  [self button:@"NSDrawer" at:NSMakeRect(SPEC_SIDE_MARGIN, toggleY, 140, METRICS_BUTTON_HEIGHT)
+        action:@selector(toggleDrawer:) id:@"NSDrawer" eau:@"NSDrawer (base)" into:content];
 
   // shared system panels (in-app NSPanels) — Eau themes their controls
-  [self button:@"Color Panel" at:NSMakeRect(240, 180, 140, 28)
-        action:@selector(showColorPanel:) id:@"ShowColor" eau:@"NSColorPanel/Eau+ColorWell" into:content];
-  [self button:@"Font Panel" at:NSMakeRect(240, 130, 140, 28)
-        action:@selector(showFontPanel:) id:@"ShowFont" eau:@"NSFontPanel" into:content];
+  [self button:@"NSColorPanel" at:NSMakeRect(rightColX, panelY, 140, METRICS_BUTTON_HEIGHT)
+        action:@selector(showColorPanel:) id:@"NSColorPanel" eau:@"NSColorPanel/Eau+ColorWell" into:content];
+  [self button:@"NSFontPanel" at:NSMakeRect(rightColX, sheetY, 140, METRICS_BUTTON_HEIGHT)
+        action:@selector(showFontPanel:) id:@"NSFontPanel" eau:@"NSFontPanel" into:content];
 
   _main = [[NSWindow alloc] initWithContentRect:cr
                                       styleMask:(NSTitledWindowMask | NSClosableWindowMask
@@ -82,12 +95,12 @@
                               backing:NSBackingStoreBuffered defer:NO];
       [_panel setTitle:@"Utility"];
       NSView *c = [_panel contentView];
-      NSTextField *l = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 76, 240, 20)];
+      NSTextField *l = [[NSTextField alloc] initWithFrame:NSMakeRect(SPEC_SIDE_MARGIN, 76, 240, 20)];
       [l setStringValue:@"Floating utility panel"];
       [l setBezeled:NO]; [l setBordered:NO]; [l setDrawsBackground:NO];
       [l setEditable:NO]; [l setSelectable:NO];
       [c addSubview:l];
-      NSButton *ok = [[NSButton alloc] initWithFrame:NSMakeRect(170, 20, 90, 28)];
+      NSButton *ok = [[NSButton alloc] initWithFrame:NSMakeRect(170, 20, 90, METRICS_BUTTON_HEIGHT)];
       [ok setTitle:@"OK"]; [ok setBezelStyle:NSRoundedBezelStyle];
       [ok setKeyEquivalent:@"\r"];
       [c addSubview:ok];
@@ -106,12 +119,12 @@
                                            styleMask:NSTitledWindowMask
                                              backing:NSBackingStoreBuffered defer:NO];
       NSView *c = [_sheet contentView];
-      NSTextField *l = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 66, 280, 20)];
+      NSTextField *l = [[NSTextField alloc] initWithFrame:NSMakeRect(SPEC_SIDE_MARGIN, 66, 280, 20)];
       [l setStringValue:@"This is a document sheet."];
       [l setBezeled:NO]; [l setBordered:NO]; [l setDrawsBackground:NO];
       [l setEditable:NO]; [l setSelectable:NO];
       [c addSubview:l];
-      NSButton *done = [[NSButton alloc] initWithFrame:NSMakeRect(210, 18, 90, 28)];
+      NSButton *done = [[NSButton alloc] initWithFrame:NSMakeRect(210, 18, 90, METRICS_BUTTON_HEIGHT)];
       [done setTitle:@"Done"]; [done setBezelStyle:NSRoundedBezelStyle];
       [done setKeyEquivalent:@"\r"];
       [done setTarget:self]; [done setAction:@selector(endSheet:)];

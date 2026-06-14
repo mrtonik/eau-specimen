@@ -85,10 +85,21 @@
 - (void)buildWindow
 {
   [self seedData];
-  NSView *content = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 700, 420)];
+
+  CGFloat rowGap = 16.0;
+  CGFloat listH = 150.0, browserH = 150.0, capH = 12.0;
+  CGFloat browserY = METRICS_CONTENT_BOTTOM_MARGIN;
+  CGFloat capY = browserY + browserH + 4;
+  CGFloat listY = capY + capH + rowGap;
+  CGFloat totalH = listY + listH + SPEC_TOP_MARGIN;
+  CGFloat listW = 300;
+  CGFloat listGap = 12;
+  CGFloat totalW = SPEC_SIDE_MARGIN + listW + listGap + listW + SPEC_SIDE_MARGIN;
+  CGFloat bw = totalW - 2 * SPEC_SIDE_MARGIN;  // browser spans full width
+  NSView *content = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, totalW, totalH)];
 
   // Table view (Eau+Table.m / NSTableHeaderCell+Eau.m)
-  NSTableView *table = [[NSTableView alloc] initWithFrame:NSMakeRect(0, 0, 300, 150)];
+  NSTableView *table = [[NSTableView alloc] initWithFrame:NSMakeRect(0, 0, 300, listH)];
   for (NSArray *cd in @[@[@"name", @"Name", @170], @[@"value", @"Value", @110]]) {
     NSTableColumn *c = [[NSTableColumn alloc] initWithIdentifier:cd[0]];
     [[c headerCell] setStringValue:cd[1]];
@@ -99,13 +110,13 @@
   [table setDelegate:self];
   [table reloadData];
   [table selectRowIndexes:[NSIndexSet indexSetWithIndex:2] byExtendingSelection:NO];
-  NSScrollView *tableSV = [self scrolled:table frame:NSMakeRect(24, 236, 300, 150)];
+  NSScrollView *tableSV = [self scrolled:table frame:NSMakeRect(SPEC_SIDE_MARGIN, listY, listW, listH)];
   [content addSubview:tableSV];
-  [self label:@"Table view (row selected)" at:NSMakeRect(24, 220, 300, 12) into:content];
-  [[SpecRegistry shared] add:table identifier:@"Table" expected:@{} eau:@"Eau+Table.m"];
+  [self label:@"NSTableView (selected)" at:NSMakeRect(SPEC_SIDE_MARGIN, listY - 4 - capH, listW, capH) into:content];
+  [[SpecRegistry shared] add:table identifier:@"NSTableView" expected:@{} eau:@"Eau+Table.m"];
 
   // Outline view (disclosure triangles)
-  NSOutlineView *outline = [[NSOutlineView alloc] initWithFrame:NSMakeRect(0, 0, 300, 150)];
+  NSOutlineView *outline = [[NSOutlineView alloc] initWithFrame:NSMakeRect(0, 0, 300, listH)];
   NSTableColumn *oc = [[NSTableColumn alloc] initWithIdentifier:@"name"];
   [[oc headerCell] setStringValue:@"Tree"];
   [oc setWidth:280];
@@ -115,21 +126,21 @@
   [outline setDelegate:self];
   [outline reloadData];
   for (id node in _tree) [outline expandItem:node];
-  NSScrollView *outlineSV = [self scrolled:outline frame:NSMakeRect(360, 236, 300, 150)];
+  NSScrollView *outlineSV = [self scrolled:outline frame:NSMakeRect(SPEC_SIDE_MARGIN + listW + listGap, listY, listW, listH)];
   [content addSubview:outlineSV];
-  [self label:@"Outline view (expanded)" at:NSMakeRect(360, 220, 300, 12) into:content];
-  [[SpecRegistry shared] add:outline identifier:@"Outline" expected:@{} eau:@"Eau+Table.m"];
+  [self label:@"NSOutlineView (expanded)" at:NSMakeRect(SPEC_SIDE_MARGIN + listW + listGap, listY - 4 - capH, listW, capH) into:content];
+  [[SpecRegistry shared] add:outline identifier:@"NSOutlineView" expected:@{} eau:@"Eau+Table.m"];
 
   // Browser (Eau+Browser.m / NSBrowserCell+Eau.m)
-  NSBrowser *browser = [[NSBrowser alloc] initWithFrame:NSMakeRect(24, 40, 636, 150)];
+  NSBrowser *browser = [[NSBrowser alloc] initWithFrame:NSMakeRect(SPEC_SIDE_MARGIN, browserY, bw, browserH)];
   [browser setMaxVisibleColumns:3];
   [browser setDelegate:self];
   [browser loadColumnZero];
   [content addSubview:browser];
-  [self label:@"Browser" at:NSMakeRect(24, 24, 636, 12) into:content];
-  [[SpecRegistry shared] add:browser identifier:@"Browser" expected:@{} eau:@"Eau+Browser.m"];
+  [self label:@"NSBrowser" at:NSMakeRect(SPEC_SIDE_MARGIN, browserY - 4 - capH, bw, capH) into:content];
+  [[SpecRegistry shared] add:browser identifier:@"NSBrowser" expected:@{} eau:@"Eau+Browser.m"];
 
-  NSWindow *win = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 700, 420)
+  NSWindow *win = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, totalW, totalH)
                                               styleMask:(NSTitledWindowMask | NSClosableWindowMask
                                                          | NSMiniaturizableWindowMask)
                                                 backing:NSBackingStoreBuffered defer:NO];
