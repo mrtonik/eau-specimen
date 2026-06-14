@@ -22,7 +22,7 @@
 
   NSView *content = [win contentView];
   NSTextField *l = [[NSTextField alloc] initWithFrame:
-                       NSMakeRect(20, size.height / 2.0 - 12, size.width - 40, 24)];
+                       NSMakeRect(SPEC_SIDE_MARGIN, size.height / 2.0 - 12, size.width - 2 * SPEC_SIDE_MARGIN, 24)];
   [l setStringValue:labelText];
   [l setBezeled:NO]; [l setBordered:NO]; [l setDrawsBackground:NO];
   [l setEditable:NO]; [l setSelectable:NO];

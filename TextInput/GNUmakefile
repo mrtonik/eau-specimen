@@ -14,7 +14,7 @@ TextInput_OBJC_FILES = \
 	$(KIT)/SpecGrid.m \
 	$(KIT)/SpecAppDelegate.m
 
-ADDITIONAL_OBJCFLAGS += -fobjc-arc -I$(KIT) -Wall
+ADDITIONAL_OBJCFLAGS += -fobjc-arc -I$(KIT) -I../.. -Wall
 TextInput_OBJC_LIBS += -ldispatch
 
 include $(GNUSTEP_MAKEFILES)/application.make

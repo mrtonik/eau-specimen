@@ -39,33 +39,33 @@
   SpecGrid *g = [SpecGrid gridWithColumns:4 cellSize:NSMakeSize(150, 64)];
 
   // Sliders
-  [g add:[self slider:0.0 ticks:0 vertical:NO] caption:@"Slider min"
+  [g add:[self slider:0.0 ticks:0 vertical:NO] caption:@"NSSlider (min)"
        expected:@{} eau:@"Eau+Slider.m"];
-  [g add:[self slider:0.5 ticks:0 vertical:NO] caption:@"Slider mid"
+  [g add:[self slider:0.5 ticks:0 vertical:NO] caption:@"NSSlider (mid)"
        expected:@{} eau:@"Eau+Slider.m"];
-  [g add:[self slider:1.0 ticks:0 vertical:NO] caption:@"Slider max"
+  [g add:[self slider:1.0 ticks:0 vertical:NO] caption:@"NSSlider (max)"
        expected:@{} eau:@"Eau+Slider.m"];
-  [g add:[self slider:0.5 ticks:6 vertical:NO] caption:@"Slider ticks"
+  [g add:[self slider:0.5 ticks:6 vertical:NO] caption:@"NSSlider (ticks)"
        expected:@{} eau:@"Eau+Slider.m"];
 
-  [g add:[self slider:0.6 ticks:0 vertical:YES] caption:@"Slider vert"
+  [g add:[self slider:0.6 ticks:0 vertical:YES] caption:@"NSSlider (vert)"
        expected:@{} eau:@"Eau+Slider.m"];
   NSSlider *sd = [self slider:0.4 ticks:0 vertical:NO];
   [sd setEnabled:NO];
-  [g add:sd caption:@"Slider disabled" expected:@{@"enabled":@NO} eau:@"Eau+Slider.m"];
+  [g add:sd caption:@"NSSlider (disabled)" expected:@{@"enabled":@NO} eau:@"Eau+Slider.m"];
 
   // Stepper
   NSStepper *st = [[NSStepper alloc] initWithFrame:NSMakeRect(0, 0, 19, 27)];
   [st setMinValue:0]; [st setMaxValue:10]; [st setIntValue:3];
-  [g add:st caption:@"Stepper" expected:@{} eau:@"Eau+Stepper.m"];
+  [g add:st caption:@"NSStepper" expected:@{} eau:@"Eau+Stepper.m"];
   NSStepper *st2 = [[NSStepper alloc] initWithFrame:NSMakeRect(0, 0, 19, 27)];
   [st2 setEnabled:NO];
-  [g add:st2 caption:@"Stepper disabled" expected:@{@"enabled":@NO} eau:@"Eau+Stepper.m"];
+  [g add:st2 caption:@"NSStepper (disabled)" expected:@{@"enabled":@NO} eau:@"Eau+Stepper.m"];
 
   // Progress (determinate = deterministic)
-  [g add:[self progressBar:40.0] caption:@"Progress 40%"
+  [g add:[self progressBar:40.0] caption:@"NSProgressIndicator (40%)"
        expected:@{} eau:@"Eau+ProgressIndicator.m"];
-  [g add:[self progressBar:80.0] caption:@"Progress 80%"
+  [g add:[self progressBar:80.0] caption:@"NSProgressIndicator (80%)"
        expected:@{} eau:@"Eau+ProgressIndicator.m"];
 
   // Spinner (indeterminate = ANIMATED → masked in goldens)
@@ -73,12 +73,12 @@
   [spin setStyle:NSProgressIndicatorSpinningStyle];
   [spin setIndeterminate:YES];
   [spin startAnimation:nil];
-  [g add:spin caption:@"Spinner" expected:@{@"animated":@YES} eau:@"Eau+ProgressIndicator.m"];
+  [g add:spin caption:@"NSProgressIndicator (spinner)" expected:@{@"animated":@YES} eau:@"Eau+ProgressIndicator.m"];
 
   // Color well
   NSColorWell *cw = [[NSColorWell alloc] initWithFrame:NSMakeRect(0, 0, 44, 24)];
   [cw setColor:[NSColor colorWithCalibratedRed:0.2 green:0.5 blue:0.9 alpha:1.0]];
-  [g add:cw caption:@"Color well" expected:@{} eau:@"Eau+ColorWell.m"];
+  [g add:cw caption:@"NSColorWell" expected:@{} eau:@"Eau+ColorWell.m"];
 
   // Segmented
   NSSegmentedControl *seg = [[NSSegmentedControl alloc] initWithFrame:NSMakeRect(0, 0, 140, 24)];
@@ -87,25 +87,25 @@
   [seg setLabel:@"Two" forSegment:1];
   [seg setLabel:@"Three" forSegment:2];
   [seg setSelectedSegment:1];
-  [g add:seg caption:@"Segmented" expected:@{} eau:@"Eau+Segmented.m"];
+  [g add:seg caption:@"NSSegmentedControl" expected:@{} eau:@"Eau+Segmented.m"];
 
   // A4: circular slider (does Eau+Slider.m handle the circular type?)
   NSSlider *circ = [[NSSlider alloc] initWithFrame:NSMakeRect(0, 0, 40, 40)];
   [[circ cell] setSliderType:NSCircularSlider];
   [circ setMinValue:0]; [circ setMaxValue:1]; [circ setDoubleValue:0.3];
-  [g add:circ caption:@"Slider circular" expected:@{} eau:@"Eau+Slider.m"];
+  [g add:circ caption:@"NSSlider (circular)" expected:@{} eau:@"Eau+Slider.m"];
 
   // Level indicator (NEW Eau theming — Eau+LevelIndicator.m fixes base GSTheme garbage)
   NSLevelIndicator *li = [[NSLevelIndicator alloc] initWithFrame:NSMakeRect(0, 0, 120, 18)];
   [li setMinValue:0]; [li setMaxValue:10]; [li setDoubleValue:6];
-  [g add:li caption:@"Level indicator" expected:@{} eau:@"Eau+LevelIndicator.m"];
+  [g add:li caption:@"NSLevelIndicator" expected:@{} eau:@"Eau+LevelIndicator.m"];
 
   // Date picker (NEW Eau theming — base draws bare text; masked until themed).
   // Fixed date for golden determinism.
   NSDatePicker *dp = [[NSDatePicker alloc] initWithFrame:NSMakeRect(0, 0, 140, 24)];
   [dp setDatePickerElements:(NSYearMonthDayDatePickerElementFlag)];
   [dp setDateValue:[NSDate dateWithTimeIntervalSince1970:0]];
-  [g add:dp caption:@"Date picker" expected:@{@"todoTheme":@YES} eau:@"Eau+DatePicker.m"];
+  [g add:dp caption:@"NSDatePicker" expected:@{@"todoTheme":@YES} eau:@"Eau+DatePicker.m"];
 
   NSView *gridContent = [g build];
   CGFloat gw = g.contentSize.width, gh = g.contentSize.height;
@@ -131,7 +131,7 @@
   [dpCap setFont:[NSFont systemFontOfSize:10]];
   [dpCap setTextColor:[NSColor darkGrayColor]];
   [content addSubview:dpCap];
-  [[SpecRegistry shared] add:gdp identifier:@"DatePickerGraphical"
+  [[SpecRegistry shared] add:gdp identifier:@"NSDatePicker (graphical)"
                    expected:@{@"todoTheme":@YES} eau:@"NSDatePicker (base)"];
 
   NSRect cr = NSMakeRect(0, 0, gw, totalH);

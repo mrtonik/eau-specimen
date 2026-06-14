@@ -13,6 +13,9 @@
 
 #import <AppKit/AppKit.h>
 
+// Pull in the authoritative theme metrics from the parent directory.
+#import "AppearanceMetrics.h"
+
 // Window / content margins
 static const CGFloat SPEC_SIDE_MARGIN   = 24.0;  // window side -> controls
 static const CGFloat SPEC_TOP_MARGIN    = 16.0;  // title bar -> first control (HIG 14-16)

@@ -18,42 +18,42 @@
 {
   SpecGrid *g = [SpecGrid gridWithColumns:4 cellSize:NSMakeSize(150, 44)];
 
-  [g add:[self field:@"Hello"] caption:@"Field edit"
+  [g add:[self field:@"Hello"] caption:@"NSTextField"
        expected:@{@"stringValue":@"Hello"} eau:@"NSTextFieldCell+Eau.m"];
 
-  [g add:[self field:@""] caption:@"Field empty"
+  [g add:[self field:@""] caption:@"NSTextField (empty)"
        expected:@{@"stringValue":@""} eau:@"NSTextFieldCell+Eau.m"];
 
   NSTextField *fd = [self field:@"Nope"];
   [fd setEnabled:NO];
-  [g add:fd caption:@"Field disabled"
+  [g add:fd caption:@"NSTextField (disabled)"
        expected:@{@"enabled":@NO} eau:@"NSTextFieldCell+Eau.m"];
 
   NSTextField *fr = [self field:@"Round"];
   [[fr cell] setBezelStyle:NSTextFieldRoundedBezel];
-  [g add:fr caption:@"Field rounded"
+  [g add:fr caption:@"NSTextField (rounded)"
        expected:@{} eau:@"NSTextFieldCell+Eau.m"];
 
   NSTextField *label = [self field:@"Static label"];
   [label setBezeled:NO]; [label setBordered:NO];
   [label setEditable:NO]; [label setSelectable:NO]; [label setDrawsBackground:NO];
-  [g add:label caption:@"Static label"
+  [g add:label caption:@"NSTextField (label)"
        expected:@{@"enabled":@YES} eau:@"NSTextFieldCell+Eau.m"];
 
   NSSecureTextField *sec = [[NSSecureTextField alloc] initWithFrame:NSMakeRect(0, 0, 130, 22)];
   [sec setStringValue:@"secret"];
-  [g add:sec caption:@"Secure field"
+  [g add:sec caption:@"NSSecureTextField"
        expected:@{} eau:@"NSTextFieldCell+Eau.m"];
 
   NSSearchField *search = [[NSSearchField alloc] initWithFrame:NSMakeRect(0, 0, 130, 22)];
   [search setStringValue:@"query"];
-  [g add:search caption:@"Search field"
+  [g add:search caption:@"NSSearchField"
        expected:@{} eau:@"NSSearchFieldCell+Eau.m"];
 
   NSComboBox *combo = [[NSComboBox alloc] initWithFrame:NSMakeRect(0, 0, 130, 22)];
   [combo addItemsWithObjectValues:@[@"Alpha", @"Beta", @"Gamma"]];
   [combo setStringValue:@"Alpha"];
-  [g add:combo caption:@"Combo box"
+  [g add:combo caption:@"NSComboBox"
        expected:@{} eau:@"NSComboBoxCell (base)"];
 
   NSView *gridContent = [g build];
@@ -84,7 +84,7 @@
   [tvCap setFont:[NSFont systemFontOfSize:10]];
   [tvCap setTextColor:[NSColor darkGrayColor]];
   [content addSubview:tvCap];
-  [[SpecRegistry shared] add:tv identifier:@"TextView" expected:@{} eau:@"NSTextView (base)"];
+  [[SpecRegistry shared] add:tv identifier:@"NSTextView" expected:@{} eau:@"NSTextView (base)"];
 
   NSRect cr = NSMakeRect(0, 0, gw, totalH);
   NSWindow *win = [[NSWindow alloc] initWithContentRect:cr
